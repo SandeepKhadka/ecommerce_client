@@ -19,4 +19,4 @@ const Product = ({imgSrc, title, price}) => {
     )
 }
 
-export default Product
+export default Product 

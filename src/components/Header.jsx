@@ -2,11 +2,26 @@ import { AiOutlineMail, AiOutlineUser, AiOutlinePhone, AiOutlineSearch } from "r
 import { Link } from "react-router-dom"
 
 
-import React from 'react'
+import React, { useState } from 'react'
+import LoginModal from "./LoginModal";
+import { useSelector } from "react-redux";
 
 
 
 export default function Header() {
+  const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
+  const user = useSelector(state => state.user.user)
+  const isAuthenticated = useSelector(state => state.user.isAuthenticated)
+  console.log(user);
+  console.log(isAuthenticated);
+
+  const handleLoginClick = () => {
+    setIsModalOpen(true); // Open the modal when the login button is clicked
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false); // Close the modal
+  };
   return <>
     <header>
       <div className=" bg-primary ">
@@ -16,7 +31,13 @@ export default function Header() {
             <span className="ml-4"><AiOutlinePhone className="inline" />(12345)67890</span>
           </div>
           <div>
-            <span> <AiOutlineUser className="inline" />login</span>
+            {
+              (isAuthenticated == true) ? <span>{user.name }</span> :
+                <span onClick={handleLoginClick} className="cursor-pointer">
+                  <><AiOutlineUser className="inline" /> login</>
+
+                </span>
+            }
           </div>
         </div>
       </div>
@@ -35,7 +56,7 @@ export default function Header() {
           </button>
         </form>
       </div>
-
     </header>
+    {isModalOpen && <LoginModal onClose={handleCloseModal} />} {/* Render modal if open */}
   </>
 }
