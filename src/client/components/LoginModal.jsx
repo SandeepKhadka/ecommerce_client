@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { login, signUp } from '../features/user/userSlice';
+import { login, signUp } from '../../features/user/userSlice';
 import axios from 'axios';
 
 const LoginModal = ({ onClose }) => {

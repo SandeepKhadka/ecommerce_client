@@ -1,5 +1,4 @@
 import React from 'react'
-import Chair from "../assets/chair.png"
 import { IoCartOutline } from "react-icons/io5";
 
 const Product = ({imgSrc, title, price}) => {

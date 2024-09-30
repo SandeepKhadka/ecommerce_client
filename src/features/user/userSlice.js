@@ -29,6 +29,7 @@ const userSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.isAuthenticated = false;
+      localStorage.removeItem("token")
     },
     setError: (state, action) => {
       state.error = action.payload;
