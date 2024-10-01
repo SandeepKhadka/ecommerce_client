@@ -2,7 +2,7 @@ import React from 'react';
 import Dashboard from '../components/Dashboard';
 import Sidebar from '../components/Sidebar';
 import Product from './Product';
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 
 const Home = () => {
     return (
@@ -14,8 +14,8 @@ const Home = () => {
 
             <div className="flex-1">
                 <Routes>
-                    {/* <Route path="/" element={<Dashboard />} /> */}
-                    <Route path="/" element={<Product />} />
+                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/product" element={<Product />} />
                 </Routes>
             </div>
         </div>

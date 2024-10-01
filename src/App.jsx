@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom"
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
 import Header from "./client/components/Header"
 import AdminHome from "./admin/pages/Home"
 import Home from "./client/pages/Home";
@@ -7,6 +7,7 @@ import { jwtDecode } from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { setUser } from "./features/user/userSlice";
+import ProductPage from "./admin/pages/Product";
 
 function App() {
   const dispatch = useDispatch()
@@ -28,7 +29,10 @@ function App() {
       {
         user?.role == "admin" ? <>
           <Routes>
-            <Route path="/admin" element={<AdminHome />} />
+            <Route path="/admin/*" element={<AdminHome />} />
+            {/* <Route path="/admin/product" element={<ProductPage />} /> */}
+            <Route path="*" element={<Navigate to="/admin" />} />
+
           </Routes>
 
         </>

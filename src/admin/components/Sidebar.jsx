@@ -25,7 +25,7 @@ const Sidebar = () => {
                     </li>
                     <li>
                         <Link
-                            to="/profile"
+                            to="profile"
                             className="flex items-center px-4 py-3 hover:bg-gray-700 transition duration-300"
                         >
                             <AiOutlineUser className="text-2xl" />
@@ -34,7 +34,7 @@ const Sidebar = () => {
                     </li>
                     <li>
                         <Link
-                            to="/product"
+                            to="product"
                             className="flex items-center px-4 py-3 hover:bg-gray-700 transition duration-300"
                         >
                             <AiOutlineShoppingCart className="text-2xl" />
@@ -43,7 +43,7 @@ const Sidebar = () => {
                     </li>
                     <li>
                         <Link
-                            to="/cart"
+                            to="cart"
                             className="flex items-center px-4 py-3 hover:bg-gray-700 transition duration-300"
                         >
                             <AiOutlineShoppingCart className="text-2xl" />
@@ -52,7 +52,7 @@ const Sidebar = () => {
                     </li>
                     <li>
                         <Link
-                            to="/settings"
+                            to="settings"
                             className="flex items-center px-4 py-3 hover:bg-gray-700 transition duration-300"
                         >
                             <AiOutlineSetting className="text-2xl" />
