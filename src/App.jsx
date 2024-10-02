@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { setUser } from "./features/user/userSlice";
 import ProductPage from "./admin/pages/Product";
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const dispatch = useDispatch()

@@ -1,6 +1,8 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { AiOutlinePlus } from 'react-icons/ai';
+import { ToastContainer, toast } from 'react-toastify';
+
 
 const ProductPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -12,6 +14,8 @@ const ProductPage = () => {
     });
 
     const [products, setProducts] = useState([])
+    const [isEditing, setIsEditing] = useState(false)
+    const [editProduct, setEditProduct] = useState(null)
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -38,6 +42,46 @@ const ProductPage = () => {
         setNewProduct((prev) => ({ ...prev, image: e.target.files[0] }));
     }
 
+    const handleEditProduct = (product) => {
+        setEditProduct(product)
+        setIsModalOpen(true)
+        setIsEditing(true)
+        setNewProduct({
+            name: product.title,
+            price: product.price,
+            description: product.description,
+            image: null
+        })
+
+    }
+
+    const handleDeleteProduct = async (product) => {
+        const confirmDelete = window.confirm("Are you sure you want to delete this product?")
+
+
+        try {
+            if (confirmDelete) {
+
+                const response = await axios.delete(`http://localhost:8000/api/admin/products/${product._id}`, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                    }
+                })
+
+                if (response.status === 200) {
+                    toast.success("Product deleted successfully")
+
+                } else {
+                    toast.error("There was an error while deleting product")
+                }
+            }
+        }
+        catch (err) {
+            console.error("The error is : ", err);
+
+        }
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const formData = new FormData()
@@ -46,25 +90,48 @@ const ProductPage = () => {
         formData.append('description', newProduct.description)
         formData.append('image', newProduct.image)
         try {
-            const response = await axios.post("http://localhost:8000/api/admin/products", formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                    Authorization: `Bearer ${localStorage.getItem("token")}`
-                }
-            })
-            // let response = await axios.post("http://localhost:8000/api/admin/products", {
-            //     title: newProduct.name,
-            //     price: newProduct.price,
-            //     description: newProduct.description,
-            //     token: localStorage.getItem("token"),
-            //     image : newProduct.image
-            // })
+            if (isEditing && editProduct) {
+                const response = await axios.put(`http://localhost:8000/api/admin/products/${editProduct._id}`, formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                    }
+                })
+                if (response.status === 200) {
+                    toast.success("Product updated successfully")
+                    setIsEditing(false)
 
-            if (response.status === 200) {
-                alert("Product added successfully")
-                setIsModalOpen(false)
-                setNewProduct({ name: '', price: '', description: '' })
+                } else {
+                    toast.error("There was an error while updating product")
+                }
+
+            } else {
+                const response = await axios.post("http://localhost:8000/api/admin/products", formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                    }
+                })
+                // let response = await axios.post("http://localhost:8000/api/admin/products", {
+                //     title: newProduct.name,
+                //     price: newProduct.price,
+                //     description: newProduct.description,
+                //     token: localStorage.getItem("token"),
+                //     image : newProduct.image
+                // })
+
+                if (response.status === 200) {
+                    toast.success("Product added successfully")
+
+                } else {
+                    toast.error("There was an error while adding product")
+                }
             }
+            setIsModalOpen(false)
+            setIsEditing(false)
+            setEditProduct(null)
+            setNewProduct({ name: '', price: '', description: '' })
+
 
 
         } catch (err) {
@@ -85,7 +152,7 @@ const ProductPage = () => {
             >
                 <AiOutlinePlus className="mr-2" /> Add Product
             </button>
-
+            <ToastContainer />
             {/* Product List (Placeholder) */}
             <div className="mt-4">
                 <h2 className="text-xl font-semibold">Product List</h2>
@@ -105,10 +172,10 @@ const ProductPage = () => {
                                 <tr key={product.id}>
                                     <td className="border px-4 py-2">{product.title}</td>
                                     <td className="border px-4 py-2">${product.price}</td>
-                                    <td className="border px-4 py-2"><img src={"http://localhost:8000/"+product.image} alt={product.title} className='h-36'/></td>
+                                    <td className="border px-4 py-2"><img src={"http://localhost:8000/" + product.image} alt={product.title} className='h-36' /></td>
                                     <td className="border px-4 py-2">
-                                        <button className="text-blue-600">Edit</button>
-                                        <button className="text-red-600 ml-2">Delete</button>
+                                        <button className="text-blue-600" onClick={() => handleEditProduct(product)}>Edit</button>
+                                        <button className="text-red-600 ml-2" onClick={() => handleDeleteProduct(product)}>Delete</button>
                                     </td>
                                 </tr>
                             ))) :
@@ -127,7 +194,7 @@ const ProductPage = () => {
             {isModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white rounded shadow-lg p-6 w-96">
-                        <h2 className="text-xl font-bold mb-4">Add New Product</h2>
+                        <h2 className="text-xl font-bold mb-4">{isEditing == true ? "Edit Product" : "Add New Product"}</h2>
                         <form onSubmit={handleSubmit}>
                             <div className="mb-4">
                                 <label className="block text-gray-700">Name</label>
@@ -158,7 +225,7 @@ const ProductPage = () => {
                                     name="image"
                                     onChange={handleFileChange}
                                     className="border w-full p-2 rounded"
-                                    required
+
                                 />
                             </div>
                             <div className="mb-4">
@@ -168,7 +235,7 @@ const ProductPage = () => {
                                     value={newProduct.description}
                                     onChange={handleInputChange}
                                     className="border w-full p-2 rounded"
-                                    required
+
                                 ></textarea>
                             </div>
                             <div className="flex justify-between">
@@ -183,7 +250,7 @@ const ProductPage = () => {
                                     type="submit"
                                     className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500"
                                 >
-                                    Add Product
+                                    {isEditing == true ? "Edit Product" : "Add Product"}
                                 </button>
                             </div>
                         </form>
