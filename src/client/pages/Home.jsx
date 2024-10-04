@@ -10,7 +10,7 @@ const Home = () => {
     const [products, setProducts] = useState([])
 
     useEffect(() => {
-        axios.get("https://dummyjson.com/products?limit=10")
+        axios.get("http://localhost:8000/api/products")
             .then(res => setProducts(res.data.products)
             )
     }, [])
@@ -30,7 +30,7 @@ const Home = () => {
 
                             :
                             products.map((el) => (
-                                <Product title={el.title} price={el.price} imgSrc={el.images[0]} />
+                                <Product id = {el._id} title={el.title} price={el.price} imgSrc={el.image} />
                             ))
                     }
 

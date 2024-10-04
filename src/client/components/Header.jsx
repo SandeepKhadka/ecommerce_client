@@ -47,6 +47,8 @@ export default function Header() {
                   <IoCartOutline className="inline" /> My Cart
                 </Link>
               </span>
+              {console.log(user)
+              }
               <span onClick={handleLoginClick} className="cursor-pointer">
                 <AiOutlineUser className="inline" />
                 {user ? user.name : 'login'}

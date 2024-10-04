@@ -16,19 +16,19 @@ const ProductPage = () => {
     const [products, setProducts] = useState([])
     const [isEditing, setIsEditing] = useState(false)
     const [editProduct, setEditProduct] = useState(null)
-
-    useEffect(() => {
-        const fetchProducts = async () => {
-            const response = await axios.get("http://localhost:8000/api/products", {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`
-                }
-            })
-            if (response.status === 200) {
-
-                setProducts(response.data.products)
+    const fetchProducts = async () => {
+        const response = await axios.get("http://localhost:8000/api/products", {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
             }
+        })
+        if (response.status === 200) {
+
+            setProducts(response.data.products)
         }
+    }
+    useEffect(() => {
+
 
         fetchProducts()
 
@@ -70,6 +70,7 @@ const ProductPage = () => {
 
                 if (response.status === 200) {
                     toast.success("Product deleted successfully")
+                    fetchProducts()
 
                 } else {
                     toast.error("There was an error while deleting product")
@@ -100,6 +101,8 @@ const ProductPage = () => {
                 if (response.status === 200) {
                     toast.success("Product updated successfully")
                     setIsEditing(false)
+                    fetchProducts()
+
 
                 } else {
                     toast.error("There was an error while updating product")
@@ -122,6 +125,8 @@ const ProductPage = () => {
 
                 if (response.status === 200) {
                     toast.success("Product added successfully")
+                    fetchProducts()
+
 
                 } else {
                     toast.error("There was an error while adding product")

@@ -9,6 +9,8 @@ import { useEffect } from "react";
 import { setUser } from "./features/user/userSlice";
 import ProductPage from "./admin/pages/Product";
 import 'react-toastify/dist/ReactToastify.css';
+import ProductCart from "./client/pages/ProductCart";
+import Checkout from "./client/pages/Checkout";
 
 function App() {
   const dispatch = useDispatch()
@@ -43,6 +45,8 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/products" element={<Products />} />
+              <Route path="/myCart" element={<ProductCart />} />
+              <Route path="/checkout" element={<Checkout />} />
             </Routes>
           </>
       }

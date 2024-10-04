@@ -20,7 +20,7 @@ const userSlice = createSlice({
       state.error = null;
     },
     login: (state, action) => {
-      const user = action.payload;
+      const user = action.payload.user;
       if (user) {
         state.user = user;
         state.isAuthenticated = true;
