@@ -24,53 +24,51 @@ const Checkout = () => {
 
     const totalPrice = cartProducts.reduce((acc, product) => acc + product.price * product.quantity, 0)
     console.log(totalPrice);
-    
+
 
     const handleSubmit = async (event) => {
-        event.preventDefault()
+        event.preventDefault(); // Prevent default form submission behavior
+
         const products = cartProducts.map((product) => ({
             _id: product.id,
-            title: product.title,
-            price: product.price,
-            quantity: product.quantity
-        }))
+            title: product.title, // Use title from cart
+            quantity: product.quantity, // Use quantity from cart
+            price: product.price, // Use price from cart
+        }));
 
         const shipping_address = {
-            full_name: event.target.full_name.value,
-            address: event.target.address.value,
-            postal_code: event.target.postal_code.value,
-            city: event.target.city.value,
-            country: event.target.country.value
-        }
+            "full_name": event.target.full_name.value,
+            "city": event.target.city.value,
+            "country": event.target.country.value,
+            "postal_code": event.target.postal_code.value,
+            "address": event.target.address.value,
+        };
 
-        const paymentMethod = event.target.paymentMethod.value
-
-        const orderData = { products, shipping_address, paymentMethod }
+        const paymentMethod = event.target.paymentMethod.value;
+        const orderData = { products, shipping_address, paymentMethod, totalPrice }
 
         try {
-            const response = await axios.post("http://localhost:8000/api/orders", orderData, {
+            const response = await axios.post('http://localhost:8000/api/orders', orderData, {
                 headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`
-                }
-            })
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`, // Send token for authentication
+                },
+            });
 
             if (response.status === 200) {
-                toast.success("Order placed successfully")
-                event.target.full_name.value = ""
-                event.target.city.value = ""
-                event.target.country.value = ""
-                event.target.postal_code.value = ""
-                event.target.address.value = ""
-                event.target.paymentMethod.value = ""
-                localStorage.removeItem("cart")
+                if (response.data.links) {
+                    window.location.href = response.data.links[1].href
+                } else {
+                    const order_id = response.data.order_id;
+                    navigate(`/?order_id=${order_id}`);
+                }
             } else {
-                toast.error("There was an error while placing order")
+                throw new Error('Failed to place order');
             }
-        } catch (err) {
-            console.error("Error while placing order", err);
-
+        } catch (error) {
+            console.error(error);
+            alert('Error placing order. Please try again.');
         }
-    }
+    };
 
     return isAuthenticated ? (
         <div className="container mx-auto p-6">
